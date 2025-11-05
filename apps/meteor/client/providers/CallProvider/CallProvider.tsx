@@ -10,6 +10,7 @@ import {
 	UserState,
 } from '@rocket.chat/core-typings';
 import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
+import { Logger } from '@rocket.chat/logger';
 import { Random } from '@rocket.chat/random';
 import type { Device } from '@rocket.chat/ui-contexts';
 import {
@@ -37,6 +38,8 @@ import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import type { QueueAggregator } from '../../lib/voip/QueueAggregator';
 import { parseOutboundPhoneNumber } from '../../lib/voip/parseOutboundPhoneNumber';
 import { WrapUpCallModal } from '../../voip/components/modals/WrapUpCallModal';
+
+const logger = new Logger('CallProvider');
 
 type NetworkState = 'online' | 'offline';
 
@@ -237,7 +240,7 @@ export const CallProvider = ({ children }: CallProviderProps) => {
 				return;
 			}
 
-			console.warn('Unknown event received');
+			logger.warn('Unknown event received');
 		};
 
 		return subscribeToNotifyUser(`${user._id}/voip.events`, handleEventReceived);

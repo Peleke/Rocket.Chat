@@ -1,5 +1,6 @@
 import { AppsEngineUIHost } from '@rocket.chat/apps-engine/client/AppsEngineUIHost';
 import type { IExternalComponentRoomInfo, IExternalComponentUserInfo } from '@rocket.chat/apps-engine/client/definition';
+import { Logger } from '@rocket.chat/logger';
 
 import { getUserAvatarURL } from '../../app/utils/client/getUserAvatarURL';
 import { sdk } from '../../app/utils/client/lib/SDKClient';
@@ -7,6 +8,8 @@ import { RoomManager } from '../lib/RoomManager';
 import { baseURI } from '../lib/baseURI';
 import { getUser } from '../lib/user';
 import { Rooms } from '../stores';
+
+const logger = new Logger('AppsEngine');
 
 // FIXME: replace non-null assertions with proper error handling
 
@@ -48,7 +51,7 @@ export class RealAppsEngineUIHost extends AppsEngineUIHost {
 				}),
 			);
 		} catch (error) {
-			console.warn(error);
+			logger.warn(error);
 		}
 
 		return {

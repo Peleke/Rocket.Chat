@@ -1,8 +1,11 @@
 import { useSetting } from '@rocket.chat/ui-contexts';
+import { Logger } from '@rocket.chat/logger';
 import { Meteor } from 'meteor/meteor';
 import { useEffect } from 'react';
 
 import type { LoginMethods } from '../AuthenticationProvider';
+
+const logger = new Logger('Authentication');
 
 export function useLDAPAndCrowdCollisionWarning() {
 	const isLdapEnabled = useSetting('LDAP_Enable', false);
@@ -15,13 +18,13 @@ export function useLDAPAndCrowdCollisionWarning() {
 			if (process.env.NODE_ENV === 'development') {
 				throw new Error('You can not use both LDAP and Crowd at the same time');
 			}
-			console.log('Both LDAP and Crowd are enabled. Please disable one of them.');
+			logger.info('Both LDAP and Crowd are enabled. Please disable one of them.');
 		}
 		if (!Meteor[loginMethod]) {
 			if (process.env.NODE_ENV === 'development') {
 				throw new Error(`Meteor.${loginMethod} is not defined`);
 			}
-			console.log(`Meteor.${loginMethod} is not defined`);
+			logger.info(`Meteor.${loginMethod} is not defined`);
 		}
 	}, [isLdapEnabled, isCrowdEnabled, loginMethod]);
 }
