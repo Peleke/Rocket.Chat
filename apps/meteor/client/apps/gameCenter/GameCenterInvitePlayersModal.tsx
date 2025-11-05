@@ -1,5 +1,6 @@
 import type { IUser } from '@rocket.chat/core-typings';
 import { Box } from '@rocket.chat/fuselage';
+import { Logger } from '@rocket.chat/logger';
 import { GenericModal } from '@rocket.chat/ui-client';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
@@ -10,6 +11,8 @@ import UserAutoCompleteMultipleFederated from '../../components/UserAutoComplete
 import { useOpenedRoom } from '../../lib/RoomManager';
 import { roomCoordinator } from '../../lib/rooms/roomCoordinator';
 import { callWithErrorHandling } from '../../lib/utils/callWithErrorHandling';
+
+const logger = new Logger('GameCenter');
 
 type Username = Exclude<IUser['username'], undefined>;
 
@@ -48,7 +51,7 @@ const GameCenterInvitePlayersModal = ({ game, onClose }: IGameCenterInvitePlayer
 			});
 			onClose();
 		} catch (err) {
-			console.warn(err);
+			logger.warn(err);
 		}
 	};
 

@@ -13,9 +13,12 @@ import {
 	ModalContent,
 	ModalFooter,
 } from '@rocket.chat/fuselage';
+import { Logger } from '@rocket.chat/logger';
 import { useEndpoint, useToastMessageDispatch } from '@rocket.chat/ui-contexts';
 import { useCallback, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
+
+const logger = new Logger('WorkspaceRegistration');
 
 type Props = {
 	email: string;
@@ -61,7 +64,7 @@ const RegisterWorkspaceSetupStepTwoModal = ({ email, step, setStep, onClose, int
 				onSuccess();
 			}
 		} catch (error: any) {
-			console.log(error);
+			logger.info(error);
 		}
 	}, [cloudConfirmationPoll, intentData.device_code, dispatchToastMessage, t, onSuccess]);
 
