@@ -1,11 +1,14 @@
 import { css } from '@rocket.chat/css-in-js';
 import { Box } from '@rocket.chat/fuselage';
 import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
+import { Logger } from '@rocket.chat/logger';
 import type { DragEvent, ReactElement, ReactNode } from 'react';
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useFormatDateAndTime } from '../../../hooks/useFormatDateAndTime';
+
+const logger = new Logger('DropTarget');
 
 type DropTargetOverlayProps = {
 	enabled: boolean;
@@ -51,7 +54,7 @@ function DropTargetOverlay({ enabled, reason, onFileDrop, visible = true, onDism
 					const file = new File([data], filename, { type: data.type });
 					files.push(file);
 				} catch (error) {
-					console.warn(error);
+					logger.warn(error);
 				}
 			}
 		}

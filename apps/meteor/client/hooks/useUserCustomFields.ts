@@ -1,4 +1,7 @@
+import { Logger } from '@rocket.chat/logger';
 import { useSetting } from '@rocket.chat/ui-contexts';
+
+const logger = new Logger('UserCustomFields');
 
 type CustomField =
 	| {
@@ -28,7 +31,7 @@ export const useUserCustomFields = (customFields: CustomField): CustomFieldDispl
 	}
 
 	if (!Array.isArray(customFieldsToShowObj)) {
-		console.warn('Invalid customFieldsToShowInUserInfo value');
+		logger.warn('Invalid customFieldsToShowInUserInfo value');
 		return undefined;
 	}
 

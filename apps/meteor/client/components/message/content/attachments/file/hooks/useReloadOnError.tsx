@@ -1,7 +1,9 @@
 import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
+import { Logger } from '@rocket.chat/logger';
 import { useSafeRefCallback } from '@rocket.chat/ui-client';
 import { useCallback, useRef, useState } from 'react';
 
+const logger = new Logger('MediaPlayer');
 const events = ['error', 'stalled', 'play'];
 
 function toURL(urlString: string): URL {
@@ -110,7 +112,7 @@ export const useReloadOnError = (url: string, type: 'video' | 'audio') => {
 					try {
 						await node.play();
 					} catch (playError) {
-						console.warn('Failed to resume playback after URL recovery:', playError);
+						logger.warn('Failed to resume playback after URL recovery:', playError);
 					} finally {
 						isRecovering.current = false;
 					}

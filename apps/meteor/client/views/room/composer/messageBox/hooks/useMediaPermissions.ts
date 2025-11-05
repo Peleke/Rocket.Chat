@@ -1,5 +1,8 @@
 import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
+import { Logger } from '@rocket.chat/logger';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+const logger = new Logger('MediaPermissions');
 
 type MediaDevices = 'camera' | 'microphone';
 
@@ -32,7 +35,7 @@ export const useMediaPermissions = (name: MediaDevices): [isPermissionDenied: bo
 					};
 					return permissionStatus.state === 'denied';
 				} catch (error) {
-					console.warn(error);
+					logger.warn(error);
 				}
 			}
 
@@ -45,7 +48,7 @@ export const useMediaPermissions = (name: MediaDevices): [isPermissionDenied: bo
 					return true;
 				}
 			} catch (error) {
-				console.warn(error);
+				logger.warn(error);
 			}
 		},
 		refetchOnMount: true,

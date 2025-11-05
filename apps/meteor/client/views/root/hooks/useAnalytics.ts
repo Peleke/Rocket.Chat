@@ -1,5 +1,8 @@
+import { Logger } from '@rocket.chat/logger';
 import { useSetting, useUserId } from '@rocket.chat/ui-contexts';
 import { useEffect } from 'react';
+
+const logger = new Logger('Analytics');
 
 declare global {
 	// eslint-disable-next-line @typescript-eslint/naming-convention
@@ -123,7 +126,7 @@ export const useAnalytics = (): void => {
 				}
 			} catch (e) {
 				// parsing JSON faild
-				console.log('Error while parsing JSON value of "piwikAdditionalTracker": ', e);
+				logger.info('Error while parsing JSON value of "piwikAdditionalTracker": ', e);
 			}
 			window._paq.push(['setTrackerUrl', `${piwikUrl}js/`]);
 			window._paq.push(['setSiteId', Number.parseInt(piwikSiteId)]);
