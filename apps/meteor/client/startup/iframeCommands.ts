@@ -1,5 +1,6 @@
 import type { UserStatus, IUser } from '@rocket.chat/core-typings';
 import { escapeRegExp } from '@rocket.chat/string-helpers';
+import { Logger } from '@rocket.chat/logger';
 import type { LocationPathname } from '@rocket.chat/ui-contexts';
 import { Meteor } from 'meteor/meteor';
 
@@ -12,6 +13,8 @@ import { loginServices } from '../lib/loginServices';
 import { settings } from '../lib/settings';
 import { getUser } from '../lib/user';
 import { router } from '../providers/RouterProvider';
+
+const logger = new Logger('IframeCommands');
 
 const commands = {
 	'go'(data: { path: string }) {
@@ -72,7 +75,7 @@ const commands = {
 	'login-with-token'(data: { token: string }) {
 		if (typeof data.token === 'string') {
 			Meteor.loginWithToken(data.token, () => {
-				console.log('Iframe command [login-with-token]: result', data);
+				logger.info('Iframe command [login-with-token]: result', data);
 			});
 		}
 	},
