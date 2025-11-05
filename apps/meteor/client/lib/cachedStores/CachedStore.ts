@@ -1,5 +1,6 @@
 import type { IRocketChatRecord } from '@rocket.chat/core-typings';
 import type { StreamNames } from '@rocket.chat/ddp-client';
+import { Logger } from '@rocket.chat/logger';
 import localforage from 'localforage';
 import { Accounts } from 'meteor/accounts-base';
 import { Meteor } from 'meteor/meteor';
@@ -66,8 +67,9 @@ export abstract class CachedStore<T extends IRocketChatRecord, U = T> implements
 		this.eventType = eventType;
 		this.store = store;
 
+		const logger = new Logger(`CachedStore:${this.name}`);
 		this.log = [getConfig(`debugCachedCollection-${this.name}`), getConfig('debugCachedCollection'), getConfig('debug')].includes('true')
-			? console.log.bind(console, `%cCachedCollection ${this.name}`, `color: navy; font-weight: bold;`)
+			? logger.debug.bind(logger)
 			: () => undefined;
 
 		CachedStoresManager.register(this);

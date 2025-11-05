@@ -1,4 +1,7 @@
 import { QueryClient } from '@tanstack/react-query';
+import { Logger } from '@rocket.chat/logger';
+
+const logger = new Logger('QueryClient');
 
 export const queryClient = new QueryClient({
 	defaultOptions: {
@@ -7,7 +10,7 @@ export const queryClient = new QueryClient({
 			retry: process.env.TEST_MODE === 'true',
 		},
 		mutations: {
-			onError: console.warn,
+			onError: (error) => logger.warn(error),
 		},
 	},
 });

@@ -1,11 +1,13 @@
 import type { IRoom } from '@rocket.chat/core-typings';
 import { Emitter } from '@rocket.chat/emitter';
+import { Logger } from '@rocket.chat/logger';
 import { useMemo, useSyncExternalStore } from 'react';
 
 import { getConfig } from './utils/getConfig';
 import { LegacyRoomManager } from '../../app/ui-utils/client';
 import { RoomHistoryManager } from '../../app/ui-utils/client/lib/RoomHistoryManager';
 
+const logger = new Logger('RoomManager');
 const debug = !!(getConfig('debug') || getConfig('debug-RoomStore'));
 
 class RoomStore extends Emitter<{
@@ -22,7 +24,7 @@ class RoomStore extends Emitter<{
 	constructor(readonly rid: string) {
 		super();
 
-		debug && this.on('changed', () => console.log(`RoomStore ${this.rid} changed`, this));
+		debug && this.on('changed', () => logger.debug(`RoomStore ${this.rid} changed`, this));
 	}
 
 	update({ scroll, lastTime, atBottom }: { scroll?: number; lastTime?: Date; atBottom?: boolean }): void {
@@ -60,17 +62,17 @@ export const RoomManager = new (class RoomManager extends Emitter<{
 		super();
 		debugRoomManager &&
 			this.on('opened', (rid) => {
-				console.log('room opened ->', rid);
+				logger.info('room opened ->', rid);
 			});
 
 		debugRoomManager &&
 			this.on('back', (rid) => {
-				console.log('room moved to back ->', rid);
+				logger.info('room moved to back ->', rid);
 			});
 
 		debugRoomManager &&
 			this.on('closed', (rid) => {
-				console.log('room close ->', rid);
+				logger.info('room close ->', rid);
 			});
 	}
 
