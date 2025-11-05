@@ -1,7 +1,10 @@
 import { Meteor } from 'meteor/meteor';
+import { Logger } from '@rocket.chat/logger';
 
 import type { ClientSession } from '../app/ecdh/client/ClientSession';
 import { sdk } from '../app/utils/client/lib/SDKClient';
+
+const logger = new Logger('ECDH');
 
 let resolveSession: (value: ClientSession | void) => void;
 const sessionPromise = new Promise<ClientSession | void>((resolve) => {
@@ -58,7 +61,7 @@ async function initEncryptedSession(): Promise<void> {
 		resolveSession(session);
 		init(session);
 	} catch (e) {
-		console.log(e);
+		logger.info(e);
 		resolveSession();
 		Meteor.connection._stream.allowConnection();
 	}
