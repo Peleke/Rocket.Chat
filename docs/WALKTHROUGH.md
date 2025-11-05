@@ -178,9 +178,103 @@ logger.info('Reloading to activate');
 - Generate documentation automatically
 - Maintain traceability from spec to code
 
-The full technical details, affected files (sample of 27), implementation steps, and testing strategy are documented in `docs/BUGS.md`. Our EPIC and STORY artifacts will contain the complete implementation narrative, test cases, and acceptance criteria.
+The full technical details, affected files (sample of 27), implementation steps, and testing strategy are documented in `docs/BUGS.md`. Our **Epic** and **Story** artifacts will contain the complete implementation narrative, test cases, and acceptance criteria.
 
 This section will walk through the SpecKit workflow: creating the EPIC, breaking it into STORYs, implementing with Claude Code + Serena MCP, and validating the changes.
+
+### 3.1 Constitution: Establishing Project Principles
+
+**SpecKit Step 1**: `/speckit.constitution`
+
+Before writing any code, we establish the governance principles that will guide our work. In this case, we've reverse-engineered the Constitution _from_ the existing codebase to ensure our integration is up-to-par.
+
+The constitution defines **Core Principles**, i.e., our 5 foundational rules:
+1. **Upstream Standards Compliance** - Follow Rocket.Chat's TypeScript/ESLint/Prettier conventions exactly
+2. **Quality-First Development** - Type checking, linting, testing, and build verification are mandatory
+3. **Minimal Scope & Evidence-Based Changes** - Build only what's required, no speculation
+4. **Systematic Testing & Validation** - Comprehensive pre-commit validation checklist
+5. **Documentation & Traceability** - Maintain clear records via commit messages and SpecKit artifacts
+
+The constitution is version-controlled at `.specify/memory/constitution.md` and will guide all subsequent SpecKit artifacts (specs, plans, tasks).
+
+**Outcome**: Constitution v1.0.0 ratified on 2025-11-05
+
+### 3.2 Specification: Defining Requirements
+
+**SpecKit Step 2**: `/speckit.specify`
+
+With our principles in place, we created a specification that describes *what* needs to happen without prescribing *how* to do it. Think of it as a requirements document that anyone—technical or not—could read and understand.
+
+**The Problem**: 51 console.log/warn calls scattered across 27 client files. They're inconsistent, hard to filter, and don't follow Rocket.Chat's logging standards.
+
+**The Fix**: Replace them all with proper `@rocket.chat/logger` infrastructure—structured logs with severity levels, module names, and proper formatting.
+
+**The Spec**: We generated [`specs/001-logger-migration/spec.md`](../specs/001-logger-migration/spec.md), which contains:
+- **User stories** prioritized by value (developers debugging, admins managing production, DevOps aggregating logs)
+- **Functional requirements** defining exactly what must happen (all 51 instances replaced, Logger imports added, tests passing)
+- **Success criteria** that are measurable and technology-agnostic (zero console.log remain, 100% test pass rate, build succeeds)
+- **Scope boundaries** preventing feature creep (client-only, no server-side changes, console.error out of scope)
+
+SpecKit uses this spec as the foundation for planning and task generation. It's intentionally non-technical—no mention of React, TypeScript, or specific implementation patterns. That comes next.
+
+**Outcome**: Spec validated and ready for planning
+
+### 3.3 Planning: Design & Implementation Strategy
+
+**SpecKit Step 3**: `/speckit.plan`
+
+Planning bridges the gap between *what* (specification) and *how* (implementation). We created a detailed implementation plan with technical decisions, risk assessment, and phase breakdown.
+
+**The Plan**: Generated [`specs/001-logger-migration/plan.md`](../specs/001-logger-migration/spec.md) covering:
+
+**Constitution Check**: All 5 principles validated with no violations—this is a textbook minimal-scope refactoring with zero feature additions.
+
+**Technical Context**: TypeScript 5.9.3 strict mode, @rocket.chat/logger (existing package), browser target, zero functional changes required.
+
+**Phase 0 - Research** ([`research.md`](../specs/001-logger-migration/research.md)):
+- Logger API documented (constructor, methods, browser compatibility)
+- All 27 affected files inventoried with instance counts
+- Existing server-side Logger patterns analyzed for consistency
+- Migration strategy: Prototype (1 file) → High-impact (2 files, 14 instances) → Remaining (24 files)
+
+**Phase 1 - Design** ([`data-model.md`](../specs/001-logger-migration/data-model.md), [`quickstart.md`](../specs/001-logger-migration/quickstart.md)):
+- Logger instance schema: one per file with descriptive name
+- Naming conventions established (ServiceWorker, VideoConf, VoIP, etc.)
+- Developer quickstart guide with before/after examples and troubleshooting
+
+**Risk Assessment**: Highest risk is Logger browser compatibility—mitigated by prototype phase verification before bulk migration.
+
+**Outcome**: Complete implementation plan with research, design artifacts, and clear execution strategy
+
+### 3.4 Tasks: Breaking Down the Work
+
+**SpecKit Step 4**: `/speckit.tasks`
+
+With the plan in place, we generated actionable tasks organized by user story. Each task has a specific file, clear acceptance criteria, and explicit dependencies.
+
+**The Tasks**: Generated [`specs/001-logger-migration/tasks.md`](../specs/001-logger-migration/tasks.md) with **49 tasks** across **6 phases**:
+
+**Phase 1 - Setup** (5 tasks): Verify Logger availability, establish baseline (tests, typecheck, lint, build all passing)
+
+**Phase 2 - Foundational** (3 tasks): Prototype phase—migrate `serviceWorker.ts` (1 instance), test in browser, validate Logger works before bulk migration
+
+**Phase 3 - User Story 1** (34 tasks): The core migration
+- High-impact files first: VoIPUser.ts (9 instances), VideoConfManager.ts (5 instances)
+- Remaining 24 files in 4 parallel batches (core infrastructure, hooks, providers/components, apps/admin)
+- Validation checkpoints after each batch
+- Final validation: grep verification, full quality gates, manual smoke test
+
+**Phase 4 - User Story 2** (2 tasks): Document Logger configuration for production log management
+
+**Phase 5 - User Story 3** (2 tasks): Document log format for aggregation tools (Splunk, ELK, CloudWatch)
+
+**Phase 6 - Polish** (3 tasks): Update project docs, optional ESLint rule, final verification
+
+**Parallelization**: 26 file migrations can run simultaneously (all modify different files). Estimated time: 4-6 hours with parallel execution vs. 10-12 hours sequential.
+
+**MVP Scope**: Phases 1-3 only (42 tasks) delivers the complete logger migration with all value.
+
+**Outcome**: Executable task list ready for implementation
 
 ---
 
