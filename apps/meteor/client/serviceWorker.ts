@@ -1,3 +1,7 @@
+import { Logger } from '@rocket.chat/logger';
+
+const logger = new Logger('ServiceWorker');
+
 const KEY = 'sw_last_reload';
 const RELOAD_WINDOW = 1000 * 10;
 
@@ -17,7 +21,7 @@ function reload() {
 	}
 
 	localStorage.setItem(KEY, new Date().toISOString());
-	console.log('service worker: reloading to activate');
+	logger.info('service worker: reloading to activate');
 	window.location.reload();
 }
 
@@ -28,13 +32,13 @@ if ('serviceWorker' in navigator) {
 		})
 		.then((reg) => {
 			if (reg.active) {
-				console.log('service worker: installed');
+				logger.info('service worker: installed');
 				if (!navigator.serviceWorker.controller) {
 					reload();
 				}
 			}
 		})
 		.catch((err) => {
-			console.log(`registration failed: ${err}`);
+			logger.info(`registration failed: ${err}`);
 		});
 }
