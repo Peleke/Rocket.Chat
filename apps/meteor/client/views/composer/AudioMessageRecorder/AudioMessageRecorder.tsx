@@ -1,6 +1,7 @@
 import type { IRoom } from '@rocket.chat/core-typings';
 import { Box, Icon, Throbber } from '@rocket.chat/fuselage';
 import { useEffectEvent } from '@rocket.chat/fuselage-hooks';
+import { Logger } from '@rocket.chat/logger';
 import { MessageComposerAction } from '@rocket.chat/ui-composer';
 import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
@@ -10,6 +11,7 @@ import { AudioRecorder } from '../../../../app/ui/client/lib/recorderjs/AudioRec
 import type { ChatAPI } from '../../../lib/chats/ChatAPI';
 import { useChat } from '../../room/contexts/ChatContext';
 
+const logger = new Logger('AudioRecorder');
 const audioRecorder = new AudioRecorder();
 
 type AudioMessageRecorderProps = {
@@ -72,7 +74,7 @@ const AudioMessageRecorder = ({ rid, chatContext, isMicrophoneDenied }: AudioMes
 			);
 			setRecordingRoomId(rid);
 		} catch (error) {
-			console.log(error);
+			logger.info(error);
 			chat?.composer?.setRecordingMode(false);
 		}
 	});

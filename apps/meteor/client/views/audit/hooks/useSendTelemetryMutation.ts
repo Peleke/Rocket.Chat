@@ -1,5 +1,8 @@
+import { Logger } from '@rocket.chat/logger';
 import { useEndpoint } from '@rocket.chat/ui-contexts';
 import { useMutation } from '@tanstack/react-query';
+
+const logger = new Logger('Telemetry');
 
 export const useSendTelemetryMutation = () => {
 	const sendTelemetry = useEndpoint('POST', '/v1/statistics.telemetry');
@@ -7,7 +10,7 @@ export const useSendTelemetryMutation = () => {
 	return useMutation({
 		mutationFn: sendTelemetry,
 		onError: (error) => {
-			console.warn(error);
+			logger.warn(error);
 		},
 	});
 };

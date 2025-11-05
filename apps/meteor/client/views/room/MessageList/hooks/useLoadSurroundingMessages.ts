@@ -1,9 +1,12 @@
 import type { IMessage } from '@rocket.chat/core-typings';
+import { Logger } from '@rocket.chat/logger';
 import { useEndpoint, useSearchParameter } from '@rocket.chat/ui-contexts';
 import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 
 import { legacyJumpToMessage } from '../../../../lib/utils/legacyJumpToMessage';
+
+const logger = new Logger('MessageList');
 
 export const useLoadSurroundingMessages = () => {
 	const msgId = useSearchParameter('msg');
@@ -38,7 +41,7 @@ export const useLoadSurroundingMessages = () => {
 				legacyJumpToMessage({ ...message, ts: new Date(message.ts) } as any as IMessage);
 			})
 			.catch((error) => {
-				console.warn(error);
+				logger.warn(error);
 			});
 		return () => {
 			abort.abort();
