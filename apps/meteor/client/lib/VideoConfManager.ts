@@ -1,9 +1,11 @@
 import type { CallPreferences, DirectCallData, DirectCallParams, IRoom, IUser, ProviderCapabilities } from '@rocket.chat/core-typings';
 import { Emitter } from '@rocket.chat/emitter';
+import { Logger } from '@rocket.chat/logger';
 
 import { getConfig } from './utils/getConfig';
 import { sdk } from '../../app/utils/client/lib/SDKClient';
 
+const logger = new Logger('VideoConf');
 const debug = !!(getConfig('debug') || getConfig('debug-VideoConf'));
 
 // The interval between attempts to call the remote user
@@ -380,15 +382,15 @@ export const VideoConfManager = new (class VideoConfManager extends Emitter<Vide
 	}
 
 	private infoLog(...args: any[]): void {
-		(debug || this._logLevel >= 1) && console.log(...args);
+		(debug || this._logLevel >= 1) && logger.info(...args);
 	}
 
 	private warnLog(...args: any[]): void {
-		(debug || this._logLevel >= 1) && console.warn(...args);
+		(debug || this._logLevel >= 1) && logger.warn(...args);
 	}
 
 	private debugLog(...args: any[]): void {
-		(debug || this._logLevel >= 2) && console.log(...args);
+		(debug || this._logLevel >= 2) && logger.debug(...args);
 	}
 
 	private rejectIncomingCallsFromUser(userId: string): void {
@@ -455,7 +457,7 @@ export const VideoConfManager = new (class VideoConfManager extends Emitter<Vide
 	}
 
 	private disconnect(clearCalls = true): void {
-		console.log(`[VideoConf] disconnecting user ${this.userId}`);
+		logger.info(`[VideoConf] disconnecting user ${this.userId}`);
 		for (const hook of this.hooks) {
 			hook();
 		}
@@ -521,7 +523,7 @@ export const VideoConfManager = new (class VideoConfManager extends Emitter<Vide
 	}
 
 	private async connectUser(userId: string): Promise<void> {
-		console.log(`[VideoConf] connecting user ${userId}`);
+		logger.info(`[VideoConf] connecting user ${userId}`);
 		this.userId = userId;
 
 		const { stop, ready } = sdk.stream('notify-user', [`${userId}/video-conference`], (data) => this.onVideoConfNotification(data));
