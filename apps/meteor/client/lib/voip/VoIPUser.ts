@@ -21,6 +21,7 @@ import type {
 } from '@rocket.chat/core-typings';
 import { Operation, UserState, WorkflowTypes } from '@rocket.chat/core-typings';
 import { Emitter } from '@rocket.chat/emitter';
+import { Logger } from '@rocket.chat/logger';
 import type { UserAgentOptions, InvitationAcceptOptions, Session, SessionInviteOptions } from 'sip.js';
 import { UserAgent, Invitation, SessionState, Registerer, RequestPendingError, Inviter } from 'sip.js';
 import type { OutgoingByeRequest, OutgoingRequestDelegate } from 'sip.js/lib/core';
@@ -32,6 +33,8 @@ import { toggleMediaStreamTracks } from './Helper';
 import LocalStream from './LocalStream';
 import { QueueAggregator } from './QueueAggregator';
 import RemoteStream from './RemoteStream';
+
+const logger = new Logger('VoIP');
 
 export class VoIPUser extends Emitter<VoipEvents> {
 	state: IState = {
@@ -381,11 +384,11 @@ export class VoIPUser extends Emitter<VoipEvents> {
 	}
 
 	onTrackAdded(_event: any): void {
-		console.log('onTrackAdded');
+		logger.info('onTrackAdded');
 	}
 
 	onTrackRemoved(_event: any): void {
-		console.log('onTrackRemoved');
+		logger.info('onTrackRemoved');
 	}
 
 	/**
@@ -1008,17 +1011,17 @@ export class VoIPUser extends Emitter<VoipEvents> {
 
 	async changeAudioInputDevice(constraints: MediaStreamConstraints): Promise<boolean> {
 		if (!this.session) {
-			console.warn('changeAudioInputDevice() : No session. Returning');
+			logger.warn('changeAudioInputDevice() : No session. Returning');
 			return false;
 		}
 		const newStream = await LocalStream.requestNewStream(constraints, this.session);
 		if (!newStream) {
-			console.warn('changeAudioInputDevice() : Unable to get local stream. Returning');
+			logger.warn('changeAudioInputDevice() : Unable to get local stream. Returning');
 			return false;
 		}
 		const { peerConnection } = this.session?.sessionDescriptionHandler as SessionDescriptionHandler;
 		if (!peerConnection) {
-			console.warn('changeAudioInputDevice() : No peer connection. Returning');
+			logger.warn('changeAudioInputDevice() : No peer connection. Returning');
 			return false;
 		}
 		LocalStream.replaceTrack(peerConnection, newStream, 'audio');
