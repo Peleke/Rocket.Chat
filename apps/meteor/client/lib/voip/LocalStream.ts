@@ -16,8 +16,11 @@
 import type { Session } from 'sip.js';
 import type { MediaStreamFactory, SessionDescriptionHandler } from 'sip.js/lib/platform/web';
 import { defaultMediaStreamFactory } from 'sip.js/lib/platform/web';
+import { Logger } from '@rocket.chat/logger';
 
 import Stream from './Stream';
+
+const logger = new Logger('VoIP');
 
 export default class LocalStream extends Stream {
 	static async requestNewStream(constraints: MediaStreamConstraints, session: Session): Promise<MediaStream | undefined> {
@@ -55,7 +58,7 @@ export default class LocalStream extends Stream {
 				let replaced = false;
 				const newTracks = newStream.getAudioTracks();
 				if (!newTracks) {
-					console.warn('replaceTrack() : No audio tracks in the stream. Returning');
+					logger.warn('replaceTrack() : No audio tracks in the stream. Returning');
 					return false;
 				}
 				for (let i = 0; i < senders?.length; i++) {
@@ -71,7 +74,7 @@ export default class LocalStream extends Stream {
 				let replaced = false;
 				const newTracks = newStream.getVideoTracks();
 				if (!newTracks) {
-					console.warn('replaceTrack() : No video tracks in the stream. Returning');
+					logger.warn('replaceTrack() : No video tracks in the stream. Returning');
 					return false;
 				}
 				for (let i = 0; i < senders?.length; i++) {
@@ -87,7 +90,7 @@ export default class LocalStream extends Stream {
 				let replaced = false;
 				const newTracks = newStream.getVideoTracks();
 				if (!newTracks) {
-					console.warn('replaceTrack() : No tracks in the stream. Returning');
+					logger.warn('replaceTrack() : No tracks in the stream. Returning');
 					return false;
 				}
 				for (let i = 0; i < senders?.length; i++) {

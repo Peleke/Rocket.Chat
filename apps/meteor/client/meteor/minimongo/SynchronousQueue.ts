@@ -1,3 +1,7 @@
+import { Logger } from '@rocket.chat/logger';
+
+const logger = new Logger('SynchronousQueue');
+
 export class SynchronousQueue {
 	private tasks: (() => void)[] = [];
 
@@ -30,7 +34,7 @@ export class SynchronousQueue {
 					if (tasks.length === 0) {
 						throw e;
 					}
-					console.log('Exception in queued task', e);
+					logger.info('Exception in queued task', e);
 				}
 			}
 		} finally {
