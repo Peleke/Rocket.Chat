@@ -90,19 +90,6 @@ meteor
 
 **Key Discovery**: `yarn dev` only runs TypeScript watchers for the packages - it doesn't actually start the Meteor application. You need to run `meteor` directly from `apps/meteor/` to get the web server.
 
-## Key Discoveries
-
-### Missing Dependencies
-- **Deno**: Required by `@rocket.chat/apps-engine` (not in docs)
-- **Build-first approach**: `yarn dev` fails without pre-built dependencies
-- **Dependency order**: Turborepo handles package build sequencing
-
-### Project Structure
-- **Monorepo**: 75 packages total (64 dev, 11 enterprise)
-- **Main app**: `apps/meteor/` (Meteor.js + React)
-- **Shared packages**: `packages/` (50+ libraries)
-- **Enterprise**: `ee/` (11 microservices + packages)
-
 ## Automated Setup
 
 For a one-command setup, use the provided script:
@@ -135,23 +122,7 @@ yarn testunit       # Unit tests
 - **Bug list**: `docs/BUGS.md` (4 quick wins identified)
 - **This walkthrough**: `docs/WALKTHROUGH.md`
 
-## Success Criteria
-
-✅ Node 22.16.0 installed
-✅ Yarn 4.10.3 enabled
-✅ Meteor 3.3.2 installed
-✅ Deno runtime installed
-✅ 3,333 dependencies installed
-✅ 69 packages built
-✅ Development server running
-✅ Hot-reload enabled
-
-## Next Steps
-
-1. **Access app**: http://localhost:3000 (once Meteor starts)
-2. **Review quick wins**: See `docs/BUGS.md`
-3. **Explore codebase**: Use Serena MCP for symbol navigation
-4. **Start coding**: TypeScript strict mode, tab indentation, 140 char lines
+At this point, we can hit the app at `http://localhost:3000`. We've also saved off a few easy bugs in [docs/Bugs.md](docs/BUGS.md).
 
 ---
 
@@ -172,13 +143,13 @@ const logger = new Logger('ServiceWorker');
 logger.info('Reloading to activate');
 ```
 
-**Our Approach**: We'll use [GitHub SpecKit](https://github.com/peleke/speckit) to drive the implementation. SpecKit is a specification-driven development tool that helps us:
-- Create structured EPICs and STORYs with clear requirements
+We'll use [GitHub SpecKit](https://github.com/peleke/speckit) to drive the implementation. SpecKit is a specification-driven development tool that helps us:
+- Create structured Tasks with clear requirements
 - Track implementation progress systematically
-- Generate documentation automatically
+- Generate documentation (like this!) automatically
 - Maintain traceability from spec to code
 
-The full technical details, affected files (sample of 27), implementation steps, and testing strategy are documented in `docs/BUGS.md`. Our **Epic** and **Story** artifacts will contain the complete implementation narrative, test cases, and acceptance criteria.
+The full technical details, affected files (sample of 27), implementation steps, and testing strategy are documented in `docs/BUGS.md`. Our Spec and Task artifacts will contain the complete implementation narrative, test cases, and acceptance criteria.
 
 This section will walk through the SpecKit workflow: creating the EPIC, breaking it into STORYs, implementing with Claude Code + Serena MCP, and validating the changes.
 
@@ -337,44 +308,6 @@ yarn build
 # Result: Successful build ✓
 ```
 
-### 3.6 Testing & Verification
-
-After completing the migration, we validated the changes through multiple quality gates:
-
-**1. Console Call Verification**
-```bash
-grep -r "console\.\(log\|warn\)" apps/meteor/client --include="*.ts" --include="*.tsx" | \
-  grep -v "console.error" | grep -v "node_modules" | grep -v ".stories.tsx"
-```
-✅ Result: Zero instances found—all 51 calls successfully migrated
-
-**2. TypeScript Compilation**
-```bash
-export NODE_OPTIONS="--max-old-space-size=8192"
-yarn workspace @rocket.chat/meteor exec tsc --noEmit
-```
-✅ Verified all imports and Logger usage type-safe
-
-**3. Linting**
-```bash
-cd apps/meteor && yarn eslint
-```
-✅ No new warnings introduced, maintained code style consistency
-
-**4. Build Verification**
-```bash
-yarn build
-```
-✅ All 69 packages compiled successfully with Logger integration
-
-**5. Git History Review**
-```bash
-git log --oneline HEAD~12..HEAD
-```
-✅ 10 atomic commits with descriptive conventional commit messages
-
-The migration passed all quality gates with zero regressions.
-
 ---
 
 ## 4. Reflections: What We Learned
@@ -416,17 +349,11 @@ Logger is Pino-based and works great in Node, but browser compatibility needed v
 
 We updated WALKTHROUGH.md, but there's always more context that could help future contributors. Balance between comprehensive and maintainable is ongoing. Writing in collaboration with an LLM is a novel workflow.
 
-### Lessons for Next Time
-
-1. **Prototype phase is non-negotiable** for any library you haven't used in this context before
-2. **Grep verification before AND after** prevents surprise regressions
-3. **Quality gates must pass** before marking tasks complete—no shortcuts
-4. **Conventional commits save time** during code review and debugging
-5. **Symbol-based tools (Serena) >> full-file operations** for large codebases
-
 ---
 
 ## 5. Looking Ahead: Bug #2 - Microservices Logging
+
+_Here's Claude's thoughts on how we approach the second bug_.
 
 Let's imagine tackling the next quick win from [`docs/BUGS.md`](./BUGS.md): **Microservices Logging Bug**.
 
@@ -471,7 +398,7 @@ Our existing constitution applies: upstream compliance, quality-first, minimal s
 | **4 - Validation** | ESLint | No new warnings |
 | **4 - Validation** | Build | Successful compilation |
 
-Feels like 1-2 hours of actual driving, a extra 1-2 to deal with microservices testing setup up-front.
+Feels like 1-2 hours of actual driving...One change, but many microservices :shrug:
 
 ### Implementation Sketch
 1. Read `apps/meteor/server/stream/stdout.ts` (symbol-based with Serena)
@@ -489,7 +416,3 @@ Feels like 1-2 hours of actual driving, a extra 1-2 to deal with microservices t
 
 ---
 
-*Setup Time: ~15 minutes (excluding downloads)*
-*First Build: ~6 minutes*
-*Subsequent Builds: <1 minute (cached)*
-*Logger Migration: ~3 hours (from spec to completion)*
