@@ -65,7 +65,7 @@ It felt closer to pair programming with an unusually disciplined engineer than �
 That’s the shift we’re starting to see everywhere.
 These tools don’t make developers obsolete — they change the level at which we operate. The focus moves up a layer: less on implementation, more on intent, structure, and specification.
 It’s early, messy, and occasionally absurd, but the pattern’s there.
-Software development is becoming a conversation that produces systems, not just code.
+Software development is becoming a conversation that produces code as a byproduct.
 
 ---
 
